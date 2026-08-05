@@ -804,7 +804,6 @@ class IntegralEnergySensorEntity(IntegrationSensor):
 
     def __init__(self, base: WattsSensorEntity, enabled_default: bool = True):
         super().__init__(
-            base.coordinator.hass,
             integration_method="left",
             name=f"{base._device.device_info.name} {base.title().replace(f'{const.POWER}', f' {const.ENERGY}')}",
             round_digits=4,
