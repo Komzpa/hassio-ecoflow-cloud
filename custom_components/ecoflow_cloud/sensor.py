@@ -59,6 +59,8 @@ _LOGGER = logging.getLogger(__name__)
 
 # HA 2025.8 added a `hass` argument to IntegrationSensor.__init__ and 2026.8 removed it again
 _INTEGRATION_SENSOR_TAKES_HASS = "hass" in inspect.signature(IntegrationSensor.__init__).parameters
+# HA 2026.11 added a required `device_class` argument to IntegrationSensor.__init__
+_INTEGRATION_SENSOR_TAKES_DEVICE_CLASS = "device_class" in inspect.signature(IntegrationSensor.__init__).parameters
 
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback):
@@ -853,6 +855,8 @@ class IntegralEnergySensorEntity(IntegrationSensor):
 
     def __init__(self, base: WattsSensorEntity, enabled_default: bool = True):
         version_kwargs: dict[str, Any] = {"hass": base.coordinator.hass} if _INTEGRATION_SENSOR_TAKES_HASS else {}
+        if _INTEGRATION_SENSOR_TAKES_DEVICE_CLASS:
+            version_kwargs["device_class"] = SensorDeviceClass.ENERGY
         super().__init__(
             **version_kwargs,
             integration_method="left",
